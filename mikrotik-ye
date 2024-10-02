@@ -1,0 +1,205 @@
+
+from librouteros import connect
+
+‎# استبدل القيم أدناه بالقيم الخاصة بجهازك
+HOST = '192.168.88.1'
+USERNAME = 'admin'
+PASSWORD = 'password'
+
+‎# الاتصال بجهاز المايكروتك
+api = connect(HOST, USERNAME, PASSWORD)
+print("تم الاتصال بجهاز المايكروتك بنجاح!")
+
+‎# إضافة مستخدم جديد
+def add_user(api, username, password):
+    api('user/add', {'name': username, 'password': password})
+    print(f"تم إضافة المستخدم: {username}")
+
+‎# حذف مستخدم
+def delete_user(api, username):
+    api('user/remove', {'numbers': username})
+    print(f"تم حذف المستخدم: {username}")
+
+‎# تحديث كلمة مرور المستخدم
+def update_user_password(api, username, new_password):
+    api('user/set', {'numbers': username, 'password': new_password})
+    print(f"تم تحديث كلمة مرور المستخدم: {username}")
+
+‎# عرض قائمة المستخدمين
+def list_users(api):
+    users = api('/user/print')
+    for user in users:
+        print(f"اسم المستخدم: {user['name']}")
+
+‎# مراقبة الشبكة
+def monitor_interface(api):
+    interfaces = api('/interface/print')
+    for interface in interfaces:
+        print(f"اسم الواجهة: {interface['name']}, الحالة: {interface['running']}")
+
+‎# إضافة واجهة جديدة
+def add_interface(api, name, type):
+    api('/interface/add', {'name': name, 'type': type})
+    print(f"تم إضافة الواجهة: {name}")
+
+‎# حذف واجهة
+def delete_interface(api, interface_id):
+    api('/interface/remove', {'numbers': interface_id})
+    print(f"تم حذف الواجهة: {interface_id}")
+
+‎# عرض قائمة الواجهات
+def list_interfaces(api):
+    interfaces = api('/interface/print')
+    for interface in interfaces:
+        print(f"واجهة: {interface['name']}, خالية: {interface['running']}")
+
+‎# إعداد جدار الحماية
+def add_firewall_rule(api, chain, action):
+    api('/ip/firewall/filter/add', {'chain': chain, 'action': action})
+    print(f"تم إضافة قاعدة جدار حماية: {chain} - {action}")
+
+‎# عرض قواعد جدار الحماية
+def list_firewall_rules(api):
+    rules = api('/ip/firewall/filter/print')
+    for rule in rules:
+        print(f"قاعدة: {rule['chain']} - {rule['action']}")
+
+‎# إعداد DHCP
+def setup_dhcp(api, address_pool):
+    api('/ip/dhcp-server/add', {'address-pool': address_pool})
+    print(f"تم إعداد خادم DHCP مع تجميع العناوين: {address_pool}")
+
+‎# عرض إعدادات DHCP
+def list_dhcp_servers(api):
+    dhcp_servers = api('/ip/dhcp-server/print')
+    for server in dhcp_servers:
+        print(f"خادم DHCP: {server['name']}")
+
+‎# إضافة عنوان IP ثابت
+def add_static_ip(api, address, mac_address):
+    api('/ip/dhcp-server/static/add', {'address': address, 'mac-address': mac_address})
+    print(f"تم إضافة IP ثابت: {address} - {mac_address}")
+
+‎# عرض العناوين IP الثابتة
+def list_static_ips(api):
+    static_ips = api('/ip/dhcp-server/static/print')
+    for ip in static_ips:
+        print(f"IP ثابت: {ip['address']} - MAC: {ip['mac-address']}")
+
+‎# إعداد VPN
+def setup_vpn(api, vpn_type):
+    api('/interface/vpn/add', {'type': vpn_type})
+    print(f"تم إعداد VPN من النوع: {vpn_type}")
+
+‎# عرض إعدادات VPN
+def list_vpn(api):
+    vpns = api('/interface/vpn/print')
+    for vpn in vpns:
+        print(f"VPN: {vpn['type']}")
+
+‎# إعداد QoS
+def setup_qos(api, queue_name):
+    api('/queue/simple/add', {'name': queue_name})
+    print(f"تم إعداد QoS: {queue_name}")
+
+‎# عرض إعدادات QoS
+def list_qos(api):
+    queues = api('/queue/simple/print')
+    for queue in queues:
+        print(f"QoS: {queue['name']}")
+
+‎# إعداد SNMP
+def setup_snmp(api):
+    api('/snmp/set', {'enabled': 'yes'})
+    print("تم تفعيل SNMP")
+
+‎# عرض إعدادات SNMP
+def list_snmp(api):
+    snmp_settings = api('/snmp/print')
+    for setting in snmp_settings:
+        print(f"SNMP: {setting['enabled']}")
+
+‎# إعداد NAT
+def setup_nat(api, action):
+    api('/ip/firewall/nat/add', {'action': action})
+    print(f"تم إعداد NAT مع الإجراء: {action}")
+
+‎# عرض إعدادات NAT
+def list_nat(api):
+    nat_settings = api('/ip/firewall/nat/print')
+    for nat in nat_settings:
+        print(f"NAT: {nat['action']}")
+
+‎# إعداد IPsec
+def setup_ipsec(api, peer_address):
+    api('/ip/ipsec/peer/add', {'address': peer_address})
+    print(f"تم إعداد IPsec مع العنوان: {peer_address}")
+
+‎# عرض إعدادات IPsec
+def list_ipsec(api):
+    ipsec_peers = api('/ip/ipsec/peer/print')
+    for peer in ipsec_peers:
+        print(f"IPsec Peer: {peer['address']}")
+
+‎# إعداد Hotspot
+def setup_hotspot(api, hotspot_name):
+    api('/ip/hotspot/add', {'name': hotspot_name})
+    print(f"تم إعداد Hotspot: {hotspot_name}")
+
+‎# عرض إعدادات Hotspot
+def list_hotspots(api):
+    hotspots = api('/ip/hotspot/print')
+    for hotspot in hotspots:
+        print(f"Hotspot: {hotspot['name']}")
+
+‎# إعداد VLAN
+def setup_vlan(api, vlan_id):
+    api('/interface/vlan/add', {'vlan-id': vlan_id})
+    print(f"تم إعداد VLAN: {vlan_id}")
+
+‎# عرض إعدادات VLAN
+def list_vlans(api):
+    vlans = api('/interface/vlan/print')
+    for vlan in vlans:
+        print(f"VLAN: {vlan['vlan-id']}")
+
+‎# إعداد PPPoE
+def setup_pppoe(api, service_name):
+    api('/interface/pppoe-client/add', {'service-name': service_name})
+    print(f"تم إعداد PPPoE: {service_name}")
+
+‎# عرض إعدادات PPPoE
+def list_pppoe(api):
+    pppoe_clients = api('/interface/pppoe-client/print')
+    for client in pppoe_clients:
+        print(f"PPPoE Client: {client['service-name']}")
+
+‎# إعداد VLAN
+def setup_bridge(api, bridge_name):
+    api('/interface/bridge/add', {'name': bridge_name})
+    print(f"تم إعداد Bridge: {bridge_name}")
+
+‎# عرض إعدادات Bridge
+def list_bridges(api):
+    bridges = api('/interface/bridge/print')
+    for bridge in bridges:
+        print(f"Bridge: {bridge['name']}")
+
+‎# تنفيذ بعض الوظائف
+if __name__ == "__main__":
+    list_users(api)
+    list_interfaces(api)
+    list_firewall_rules(api)
+    list_dhcp_servers(api)
+    list_static_ips(api)
+    list_vpn(api)
+    list_qos(api)
+    list_snmp(api)
+    list_nat(api)
+    list_ipsec(api)
+    list_hotspots(api)
+    list_vlans(api)
+    list_pppoe(api)
+    list_bridges(api)
+
+‎# يمكنك الآن استخدام الدوال المختلفة لإدارة جهاز المايكروتك الخاص بك.
